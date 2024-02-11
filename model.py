@@ -6,12 +6,11 @@ class Model:
     def __init__(self, model, params):
         self.data = None
         self.predictions = None
-        self.model = model
-        self.params = params
+        self.model = model(**params)
 
     def fit_predict(self, df):
         self.data = df
-        self.predictions = self.model.fit_predict(**self.params)
+        self.predictions = self.model.fit_predict(self.data)
 
     def silhouette_coef(self):
         return silhouette_score(self.data, self.predictions)
