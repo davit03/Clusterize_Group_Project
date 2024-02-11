@@ -10,5 +10,11 @@ if "__main__" == __name__:
 
     args = parser.parse_args()
     df = pd.read_csv(args.data)
+    if args.algo == "all":
+        pass
+    elif args.config_path is not None:
+        pass
+    else:
+        pass
 
 
