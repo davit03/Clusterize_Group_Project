@@ -4,9 +4,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import SpectralClustering
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-from sklearn.manifold import MDS
+from sklearn.mixture import GaussianMixture
 
 if "__main__" == __name__:
     parser = argparse.ArgumentParser(description="If run wth --all .yaml file must be provided")
@@ -21,14 +19,10 @@ if "__main__" == __name__:
     elif args.config_path is not None:
         pass
     else:
-        # kmeans = KMeans()
-        # params = kmeans.get_params(args)
         algorithms = {"KMeans" : KMeans(),
                       "DBSCAN" : DBSCAN(),
                       "SpectralClustering" : SpectralClustering(),
-                      "PCA" : PCA(),
-                      "MDS" : MDS(),
-                      "TSNE" : TSNE()}
+                      "GaussianMixture" : GaussianMixture()}
         model = algorithms[args.algo]
         params = model.get_params().keys()
         params_as_input = ["--" + value + "\n" for value in params]
@@ -41,4 +35,3 @@ if "__main__" == __name__:
             key = params_list[i][2:]
             value = params_list[i+1]
             params_dict[key] = value
-        print(params_dict)
