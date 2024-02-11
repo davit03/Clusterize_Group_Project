@@ -6,7 +6,8 @@ class Model:
     def __init__(self, model, params):
         self.data = None
         self.predictions = None
-        self.model = model(**params)
+        model_class = type(model)
+        self.model = model_class(**params)
 
     def fit_predict(self, df):
         self.data = df
