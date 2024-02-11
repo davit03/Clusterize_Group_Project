@@ -30,6 +30,7 @@ if "__main__" == __name__:
         result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
         for algorithm, parameters in data.items():
             model = Model(get_alg_name(algorithm), parameters)
+            model.fit_predict(df)
             results.append(model.get_results())
             new_row = {'name': algorithm, 'Silhouette coefficient': model.silhouette_coef()}
             result_df = df.append(new_row, ignore_index=True)
