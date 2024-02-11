@@ -20,7 +20,7 @@ class Model:
         return self.silhouette_coef(), self.get_picture()
 
     def get_picture(self):
-        if self.data.shape()[1] > 3:
+        if self.data.shape[1] > 3:
             return None
         plt.scatter(self.data[:, 0], self.data[:, 1], c=self.predictions, cmap='viridis')
         plt.title('Cluster Predictions with' + type(self.model).__name__)
