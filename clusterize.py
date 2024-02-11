@@ -2,14 +2,18 @@ import argparse
 import pandas as pd
 import yaml
 import numpy as np
-
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import SpectralClustering
 from sklearn.mixture import GaussianMixture
-
 from model import Model
 
+def get_alg_name(name):
+    algorithms = {"KMeans": KMeans(),
+                  "DBSCAN": DBSCAN(),
+                  "SpectralClustering": SpectralClustering(),
+                  "GaussianMixture": GaussianMixture()}
+    return algorithms[name]
 
 if "__main__" == __name__:
     parser = argparse.ArgumentParser(description="If run wth --all .yaml file must be provided")
@@ -22,13 +26,10 @@ if "__main__" == __name__:
     if args.algo == "all":
         with open('clustering_config.yaml', 'r') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
-        print(data)
-        model = Model()
         results = []
         result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
         for algorithm, parameters in data.items():
-            model = Model(algorithm, parameters)
-
+            model = Model(get_alg_name(algorithm), parameters)
             results.append(model.get_results())
             new_row = {'name': algorithm, 'Silhouette coefficient': model.silhouette_coef()}
             result_df = df.append(new_row, ignore_index=True)
@@ -40,16 +41,11 @@ if "__main__" == __name__:
         with open('clustering_config.yaml', 'r') as f:
             parameters = yaml.load(f, Loader=yaml.SafeLoader)
         algorithm = args.algo
-        model = Model(algorithm, parameters)
-        picture = model.get_picture()
-        print("Your model silhouette coefficent is", model.get_silhouette_coef)
+        model = Model(get_alg_name(algorithm), parameters)
+        results = model.get_results()
+        print("Your model silhouette coefficent is", results[0])
     else:
-
-        algorithms = {"KMeans" : KMeans(),
-                      "DBSCAN" : DBSCAN(),
-                      "SpectralClustering" : SpectralClustering(),
-                      "GaussianMixture" : GaussianMixture()}
-        model = algorithms[args.algo]
+        model = get_alg_name(args.algo)
         params = model.get_params().keys()
         params_as_input = ["--" + value + "\n" for value in params]
         line = "Please insert values for any of these attributes (default values will be used otherwise)"
