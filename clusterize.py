@@ -21,10 +21,9 @@ if "__main__" == __name__:
         result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
         for algorithm, parameters in data.items():
             model = Model(algorithm, parameters)
-            picture = model.get_picture()
-            silhouette_coef = model.get_silhouette_coef(df)
-            results.append((silhouette_coef, picture))
-            new_row = {'name': algorithm, 'Silhouette coefficient': silhouette_coef}
+
+            results.append(model.get_results())
+            new_row = {'name': algorithm, 'Silhouette coefficient': model.silhouette_coef()}
             result_df = df.append(new_row, ignore_index=True)
 
         csv_file_path = 'all_model_results.csv'
@@ -32,10 +31,10 @@ if "__main__" == __name__:
 
     elif args.config_path is not None:
         with open('clustering_config.yaml', 'r') as f:
-            data = yaml.load(f, Loader=yaml.SafeLoader)
-            model = Model(data)
-            silhouette = model.get_silhouette(df)
-            picture = model.get_picture()
-            print("Your model silhouette coefficent is", model.get_silhouette_coef)
+            parameters = yaml.load(f, Loader=yaml.SafeLoader)
+        algorithm = args.algo
+        model = Model(algorithm, parameters)
+        picture = model.get_picture()
+        print("Your model silhouette coefficent is", model.get_silhouette_coef)
     else:
         pass

@@ -13,10 +13,16 @@ class Model:
         self.data = df
         self.predictions = self.model.fit_predict(**self.params)
 
-    def silhouette_coef(self, df):
+    def silhouette_coef(self):
         return silhouette_score(self.data, self.predictions)
 
-    def get_picture(self, ):
+    def get_results(self):
+        if self.data.shape()[1] < 3:
+            return self.silhouette_coef(), self.get_picture()
+        else:
+            return self.silhouette_coef()
+
+    def get_picture(self):
         plt.scatter(self.data[:, 0], self.data[:, 1], c=self.predictions, cmap='viridis')
         plt.title('Cluster Predictions with' + type(self.model).__name__)
         plt.xlabel('Feature 1')
