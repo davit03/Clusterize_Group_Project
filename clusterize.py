@@ -1,10 +1,15 @@
 import argparse
 import pandas as pd
+import yaml
 import numpy as np
+
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import SpectralClustering
 from sklearn.mixture import GaussianMixture
+
+from model import Model
+
 
 if "__main__" == __name__:
     parser = argparse.ArgumentParser(description="If run wth --all .yaml file must be provided")
@@ -13,12 +18,33 @@ if "__main__" == __name__:
     parser.add_argument("--config_path", type=str, help="Path to the .yaml file with algo parameters")
 
     args = parser.parse_args()
-    # df = pd.read_csv(args.data)
+    df = pd.read_csv(args.data)
     if args.algo == "all":
-        pass
+        with open('clustering_config.yaml', 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+        print(data)
+        model = Model()
+        results = []
+        result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
+        for algorithm, parameters in data.items():
+            model = Model(algorithm, parameters)
+
+            results.append(model.get_results())
+            new_row = {'name': algorithm, 'Silhouette coefficient': model.silhouette_coef()}
+            result_df = df.append(new_row, ignore_index=True)
+
+        csv_file_path = 'all_model_results.csv'
+        result_df.to_csv(csv_file_path, index=False)
+
     elif args.config_path is not None:
-        pass
+        with open('clustering_config.yaml', 'r') as f:
+            parameters = yaml.load(f, Loader=yaml.SafeLoader)
+        algorithm = args.algo
+        model = Model(algorithm, parameters)
+        picture = model.get_picture()
+        print("Your model silhouette coefficent is", model.get_silhouette_coef)
     else:
+
         algorithms = {"KMeans" : KMeans(),
                       "DBSCAN" : DBSCAN(),
                       "SpectralClustering" : SpectralClustering(),
@@ -35,3 +61,4 @@ if "__main__" == __name__:
             key = params_list[i][2:]
             value = params_list[i+1]
             params_dict[key] = value
+
