@@ -21,10 +21,10 @@ if "__main__" == __name__:
         result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
         for algorithm, parameters in data.items():
             model = Model(algorithm, parameters)
-            silhouette = model.get_silhouette(df)
-            picture = model.get_picture(df)
-            results.append((silhouette, picture))
-            new_row = {'name': algorithm, 'Silhouette coefficient': model.get_silhouette_coef}
+            picture = model.get_picture()
+            silhouette_coef = model.get_silhouette_coef(df)
+            results.append((silhouette_coef, picture))
+            new_row = {'name': algorithm, 'Silhouette coefficient': silhouette_coef}
             result_df = df.append(new_row, ignore_index=True)
 
         csv_file_path = 'all_model_results.csv'
@@ -35,9 +35,7 @@ if "__main__" == __name__:
             data = yaml.load(f, Loader=yaml.SafeLoader)
             model = Model(data)
             silhouette = model.get_silhouette(df)
-            picture = model.get_picture(df)
+            picture = model.get_picture()
             print("Your model silhouette coefficent is", model.get_silhouette_coef)
     else:
         pass
-
-
