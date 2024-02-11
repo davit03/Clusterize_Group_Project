@@ -2,7 +2,7 @@ KMeans:
   init: random
   max_iter: 40
   n_clusters: 10
-Spectral:
+SpectralClustering:
   affinity: rbf
   gamma: 1.1
   n_clusters: 8
