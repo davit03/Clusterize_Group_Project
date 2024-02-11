@@ -33,7 +33,7 @@ if "__main__" == __name__:
             model.fit_predict(df)
             results.append(model.get_results())
             new_row = {'name': algorithm, 'Silhouette coefficient': model.silhouette_coef()}
-            result_df = df.append(new_row, ignore_index=True)
+            result_df = df._append(new_row, ignore_index=True)
 
         csv_file_path = 'all_model_results.csv'
         result_df.to_csv(csv_file_path, index=False)
