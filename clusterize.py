@@ -1,6 +1,8 @@
 import argparse
 import pandas as pd
+import yaml
 import numpy as np
+from model import Model
 
 if "__main__" == __name__:
     parser = argparse.ArgumentParser(description="If run wth --all .yaml file must be provided")
@@ -11,9 +13,30 @@ if "__main__" == __name__:
     args = parser.parse_args()
     df = pd.read_csv(args.data)
     if args.algo == "all":
-        pass
+        with open('clustering_config.yaml', 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+        print(data)
+        model = Model()
+        results = []
+        result_df = pd.DataFrame(columns=['Name', 'Silhouette coefficient'])
+        for algorithm, parameters in data.items():
+            model = Model(algorithm, parameters)
+            silhouette = model.get_silhouette(df)
+            picture = model.get_picture(df)
+            results.append((silhouette, picture))
+            new_row = {'name': algorithm, 'Silhouette coefficient': model.get_silhouette_coef}
+            result_df = df.append(new_row, ignore_index=True)
+
+        csv_file_path = 'all_model_results.csv'
+        result_df.to_csv(csv_file_path, index=False)
+
     elif args.config_path is not None:
-        pass
+        with open('clustering_config.yaml', 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+            model = Model(data)
+            silhouette = model.get_silhouette(df)
+            picture = model.get_picture(df)
+            print("Your model silhouette coefficent is", model.get_silhouette_coef)
     else:
         pass
 
